@@ -258,17 +258,17 @@ input.addEventListener("input", () => {
   });
 });
 
-/* ⬅️⬆️⬇️ 방해 안 하고 → 만 사용 */
+/* ⬅️ 왼쪽/오른쪽 화살표 로직 수정 */
 input.addEventListener("keydown", e => {
 
-  // 엔터 / 스페이스 : 다 쳤을 때만
+  // 엔터 / 스페이스 : 다 쳤을 때만 다음 문장으로
   if ((e.key === "Enter" || e.key === " ") && input.value === currentSentence) {
     e.preventDefault();
     newSentence();
   }
 
-// 👉 오른쪽 화살표 : 다음 기록이 있으면 보여주고, 없으면 새로 생성
-  if (e.key === "ArrowRight") {
+  // 👉 Alt + 오른쪽 화살표 : 다음 기록 혹은 새 문장
+  if (e.key === "ArrowRight" && e.altKey) {
     e.preventDefault();
     if (historyIndex < history.length - 1) {
       historyIndex++;
@@ -278,8 +278,8 @@ input.addEventListener("keydown", e => {
     }
   }
 
-  // 👈 왼쪽 화살표: 이전 기록이 있을 때만 돌아가기
-  if (e.key === "ArrowLeft") {
+  // 👈 Alt + 왼쪽 화살표 : 이전 기록으로 돌아가기
+  if (e.key === "ArrowLeft" && e.altKey) {
     e.preventDefault();
     if (historyIndex > 0) {
       historyIndex--;
@@ -302,4 +302,5 @@ newSentence();
 
 </body>
 </html>
+
 
