@@ -81,6 +81,46 @@ input::placeholder {
   color: #c36081;
 }
 
+/* 추가된 내비게이션 스타일 */
+.navigation-hints {
+  margin-top: 25px;
+}
+
+.nav-buttons {
+  margin-bottom: 10px;
+}
+
+.nav-buttons button {
+  margin: 0 5px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid #ae97c1;
+  background: transparent;
+  color: #ae97c1;
+  cursor: pointer;
+  font-family: 'Gowun Batang', serif;
+  transition: 0.3s;
+}
+
+.nav-buttons button:hover {
+  background: #ae97c1;
+  color: white;
+}
+
+.shortcut-guide {
+  font-size: 14px;
+  color: #c36081;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.shortcut-guide span {
+  background: #ecbecd;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
 .speed {
   margin-top: 18px;
   font-size: 20px;
@@ -108,6 +148,14 @@ input::placeholder {
   <div class="sentence" id="sentence"></div>
 
   <input id="input" placeholder="여기에 그대로 쳐보세요" autocomplete="off">
+
+  <div class="navigation-hints">
+    <div class="nav-buttons">
+      <button id="prevBtn">이전 문장</button>
+      <button id="nextBtn">다음 문장</button>
+    </div>
+    <p class="shortcut-guide">팁: 단축키 <span>Alt + ← / →</span> 를 이용해 보세요!</p>
+  </div>
 
   <div class="speed" id="speed">0</div>
 
@@ -165,7 +213,7 @@ const data = {
     "싸늘하다. 가슴에 비수가 날아와 꽂힌다.",
     "지금까지 이런 맛은 없었다. 이것은 갈비인가 통닭인가. 네 수원 왕갈비 통닭입니다."
   ],
-      drama: [
+  drama: [
     "누구의 인생이건 신이 머물다 가는 순간이 있다.",
     "좋아하는 데 이유가 어딨어",
     "나는 너랑 있으면 나답다.",
@@ -178,7 +226,6 @@ const data = {
     "이래서 남들 놀아볼 때 놀아야지 나이 들어서 사고를 안 치는데..",
     "우리의 걸음은 우리를 퍽 닮아있었다."
   ]
-  
 };
 
 let currentType = "anime";
@@ -190,12 +237,13 @@ let historyIndex = -1;
 const sentenceEl = document.getElementById("sentence");
 const input = document.getElementById("input");
 const speedEl = document.getElementById("speed");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
 
 function newSentence() {
   const list = data[currentType];
   const picked = list[Math.floor(Math.random() * list.length)];
   
-  // 현재 인덱스 이후의 기록은 지우고 새로운 문장 추가
   history = history.slice(0, historyIndex + 1);
   history.push(picked);
   historyIndex++;
@@ -203,7 +251,6 @@ function newSentence() {
   displaySentence(picked);
 }
 
-// 화면에 글자를 그려주는 기능을 따로 분리 (왼쪽 화살표 누를 때 재사용)
 function displaySentence(text) {
   sentenceEl.classList.add("fade-out");
   
@@ -258,16 +305,13 @@ input.addEventListener("input", () => {
   });
 });
 
-/* ⬅️ 왼쪽/오른쪽 화살표 로직 수정 */
 input.addEventListener("keydown", e => {
-
-  // 엔터 / 스페이스 : 다 쳤을 때만 다음 문장으로
   if ((e.key === "Enter" || e.key === " ") && input.value === currentSentence) {
     e.preventDefault();
     newSentence();
   }
 
-  // 👉 Alt + 오른쪽 화살표 : 다음 기록 혹은 새 문장
+  // Alt + 오른쪽 화살표: 다음 기록 혹은 새 문장
   if (e.key === "ArrowRight" && e.altKey) {
     e.preventDefault();
     if (historyIndex < history.length - 1) {
@@ -278,13 +322,30 @@ input.addEventListener("keydown", e => {
     }
   }
 
-  // 👈 Alt + 왼쪽 화살표 : 이전 기록으로 돌아가기
+  // Alt + 왼쪽 화살표: 이전 기록으로
   if (e.key === "ArrowLeft" && e.altKey) {
     e.preventDefault();
     if (historyIndex > 0) {
       historyIndex--;
       displaySentence(history[historyIndex]);
     }
+  }
+});
+
+// 버튼 클릭 이벤트
+prevBtn.addEventListener("click", () => {
+  if (historyIndex > 0) {
+    historyIndex--;
+    displaySentence(history[historyIndex]);
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  if (historyIndex < history.length - 1) {
+    historyIndex++;
+    displaySentence(history[historyIndex]);
+  } else {
+    newSentence();
   }
 });
 
@@ -302,5 +363,3 @@ newSentence();
 
 </body>
 </html>
-
-
