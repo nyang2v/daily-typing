@@ -51,7 +51,7 @@ body {
 .sentence {
   font-size: 26px;
   margin-bottom: 26px;
-  color: #e180c4; /* 기준 색상 */
+  color: #e180c4;
   transition: opacity 0.4s ease;
   white-space: nowrap;
   min-height: 40px;
@@ -104,26 +104,29 @@ input {
 
 .stat-item {
   font-size: 19px;
-  font-weight: bold;
-  color: #e180c4; /* 예시 문장 색상과 맞춤 */
+  font-weight: normal; /* 볼드 해제 */
+  color: #e180c4; 
 }
 
 .stat-value {
   font-size: 22px;
+  font-weight: normal; /* 볼드 해제 */
   display: inline-block;
   min-width: 40px;
   text-align: left;
   margin-left: 5px;
+  transition: color 0.2s;
 }
 
 .sparkle {
   filter: drop-shadow(0 0 6px rgba(255,255,255,0.9));
   animation: pulse 0.5s infinite alternate;
+  display: inline-block;
 }
 
 @keyframes pulse {
   from { transform: scale(1); }
-  to { transform: scale(1.05); }
+  to { transform: scale(1.1); }
 }
 
 .shortcut-guide {
@@ -169,7 +172,6 @@ input {
 </div>
 
 <script>
-// 데이터 배열 (생략 없이 그대로 사용하세요)
 const data = {
   anime: [
     "정의의 이름으로 널 용서하지 않겠다!", "주님, 오늘도 정의로운 도둑이 되는 걸 허락해주세요.",
@@ -178,8 +180,7 @@ const data = {
     "내 어린 시절 우연히 들었던 믿지 못할 한마디", "찾아라 드래곤볼 세상에서 제일 신비로운 비밀",
     "마지막에 웃기 위해 우리들의 오늘을 기꺼이 이겨내가자", "그랑죠 그랑죠 마법으로 빛나는 그랑죠",
     "아침 해가 빛나는 끝이 없는 바닷가", "너는 할 수 있어, 세계의 피구왕, 통키 파이팅 피구왕왕왕",
-    "뜨거운 코트를 가르며 너에게 가고 있어", "치키치키 차카차카 초코초코초",
-    "뾰로롱 꼬마 마녀 열두살난 마법, 마법의 천사", "만날 수 없어 만나고 싶은데 그런 슬픈 기분인걸"
+    "뜨거운 코트를 가르며 너에게 가고 있어", "만날 수 없어 만나고 싶은데 그런 슬픈 기분인걸"
   ],
   movie: ["인생은 원래 계획대로 안 돼.", "완벽한 사람은 없다.", "실수 좀 하면 어때.", "행복은 대충 살아도 온다.", "묻고 더블로 가!", "니가 가라, 하와이."],
   drama: ["누구의 인생이건 신이 머물다 가는 순간이 있다.", "좋아하는 데 이유가 어딨어", "나는 너랑 있으면 나답다.", "설레는 건 늘 사소한 거야."]
@@ -198,6 +199,20 @@ const accuracyEl = document.getElementById("accuracy");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 
+function getSpeedColor(speed) {
+  if (speed < 100) return "#869bc9"; // 0~99
+  if (speed < 200) return "#8fbc93"; // 100~199
+  if (speed < 300) return "#ffb347"; // 200~299
+  if (speed < 400) return "#ff6f6f"; // 300~399
+  if (speed < 500) return "#ae97c1"; // 400~499
+  if (speed < 600) return "#e180c4"; // 500~599
+  if (speed < 700) return "#f4a6c1"; // 600~699
+  if (speed < 800) return "#b39ddb"; // 700~799
+  if (speed < 900) return "#6fa8dc"; // 800~899
+  if (speed < 1000) return "#bcdffb"; // 900~999
+  return "#d4af37"; // 1000 이상 (골드톤)
+}
+
 function newSentence() {
   const list = data[currentType];
   const picked = list[Math.floor(Math.random() * list.length)];
@@ -215,6 +230,7 @@ function displaySentence(text) {
     input.value = "";
     startTime = null;
     speedEl.textContent = "0";
+    speedEl.style.color = getSpeedColor(0);
     accuracyEl.textContent = "100";
     speedEl.classList.remove("sparkle");
     [...currentSentence].forEach(char => {
@@ -233,18 +249,22 @@ input.addEventListener("input", () => {
     speedEl.textContent = "0";
     return;
   }
-  
   if (!startTime) startTime = Date.now();
 
-  // 타수 계산: 맨 처음 버전 (글자 수 기반)으로 복구
   const elapsedMinutes = (Date.now() - startTime) / 60000;
   const speed = Math.floor(input.value.length / elapsedMinutes) || 0;
 
   speedEl.textContent = speed;
+  speedEl.style.color = getSpeedColor(speed);
   
-  // 500타 이상 효과 (필요 없으면 제거 가능해요!)
-  if (speed >= 500) speedEl.classList.add("sparkle");
-  else speedEl.classList.remove("sparkle");
+  // 500타 넘을 때 반짝이 효과 및 별 추가
+  if (speed >= 500) {
+    speedEl.classList.add("sparkle");
+    speedEl.innerHTML = `✨ ${speed}`;
+  } else {
+    speedEl.classList.remove("sparkle");
+    speedEl.textContent = speed;
+  }
 
   const spans = sentenceEl.querySelectorAll("span");
   let correctChars = 0;
@@ -261,10 +281,16 @@ input.addEventListener("input", () => {
 });
 
 input.addEventListener("keydown", e => {
-  if (e.key === "Enter" && input.value === currentSentence) {
-    e.preventDefault();
-    newSentence();
+  // 엔터나 스페이스바를 눌렀을 때
+  if (e.key === "Enter" || e.key === " ") {
+    // 문장 길이만큼 타이핑했다면 (틀렸어도 상관없음) 다음 문장으로!
+    if (input.value.length >= currentSentence.length) {
+      e.preventDefault();
+      newSentence();
+    }
   }
+  
+  // 단축키 로직
   if (e.key === "ArrowRight" && e.altKey) {
     e.preventDefault();
     if (historyIndex < history.length - 1) {
