@@ -51,7 +51,7 @@ body {
 .sentence {
   font-size: 26px;
   margin-bottom: 26px;
-  color: #e180c4;
+  color: #e180c4; /* 기준 색상 */
   transition: opacity 0.4s ease;
   white-space: nowrap;
   min-height: 40px;
@@ -94,30 +94,26 @@ input {
   transition: 0.3s;
 }
 
-/* 수평 정렬을 위한 스타일 수정 */
 .stats-container {
   display: flex;
   justify-content: center;
-  align-items: baseline; /* 글자 아래 기준선을 맞춤 */
+  align-items: baseline;
   gap: 40px;
   margin-top: 25px;
-  min-height: 35px;
 }
 
 .stat-item {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: bold;
-  color: #923e59;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  color: #e180c4; /* 예시 문장 색상과 맞춤 */
 }
 
 .stat-value {
-  font-size: 24px;
+  font-size: 22px;
   display: inline-block;
-  min-width: 50px;
+  min-width: 40px;
   text-align: left;
+  margin-left: 5px;
 }
 
 .sparkle {
@@ -173,6 +169,7 @@ input {
 </div>
 
 <script>
+// 데이터 배열 (생략 없이 그대로 사용하세요)
 const data = {
   anime: [
     "정의의 이름으로 널 용서하지 않겠다!", "주님, 오늘도 정의로운 도둑이 되는 걸 허락해주세요.",
@@ -180,10 +177,12 @@ const data = {
     "전설 속에서 이루지 못한 사랑, 그 약속 지키러 넌 온거야", "자 이제 시작이야, 내 꿈을 위한 여행~ 피카츄",
     "내 어린 시절 우연히 들었던 믿지 못할 한마디", "찾아라 드래곤볼 세상에서 제일 신비로운 비밀",
     "마지막에 웃기 위해 우리들의 오늘을 기꺼이 이겨내가자", "그랑죠 그랑죠 마법으로 빛나는 그랑죠",
-    "어린 시절 우연히 들었던 믿지 못할 한마디", "아침 해가 빛나는 끝이 없는 바닷가"
+    "아침 해가 빛나는 끝이 없는 바닷가", "너는 할 수 있어, 세계의 피구왕, 통키 파이팅 피구왕왕왕",
+    "뜨거운 코트를 가르며 너에게 가고 있어", "치키치키 차카차카 초코초코초",
+    "뾰로롱 꼬마 마녀 열두살난 마법, 마법의 천사", "만날 수 없어 만나고 싶은데 그런 슬픈 기분인걸"
   ],
-  movie: ["인생은 원래 계획대로 안 돼.", "완벽한 사람은 없다.", "실수 좀 하면 어때.", "묻고 더블로 가!", "니가 가라, 하와이."],
-  drama: ["누구의 인생이건 신이 머물다 가는 순간이 있다.", "좋아하는 데 이유가 어딨어", "나는 너랑 있으면 나답다."]
+  movie: ["인생은 원래 계획대로 안 돼.", "완벽한 사람은 없다.", "실수 좀 하면 어때.", "행복은 대충 살아도 온다.", "묻고 더블로 가!", "니가 가라, 하와이."],
+  drama: ["누구의 인생이건 신이 머물다 가는 순간이 있다.", "좋아하는 데 이유가 어딨어", "나는 너랑 있으면 나답다.", "설레는 건 늘 사소한 거야."]
 };
 
 let currentType = "anime";
@@ -237,19 +236,14 @@ input.addEventListener("input", () => {
   
   if (!startTime) startTime = Date.now();
 
-  const elapsedSeconds = (Date.now() - startTime) / 1000;
-  
-  // 타수 계산 로직 개선: 시작 후 1초간은 계산 유예 (튀는 현상 방지)
-  let cpm = 0;
-  if (elapsedSeconds > 1) {
-    cpm = Math.floor((input.value.length * 150) / elapsedSeconds); 
-    // 한글 보정을 위해 (글자수 * 3) / (초/60) => 글자수 * 180 / 초 이나, 
-    // 너무 높게 나오신다고 하여 계수를 150으로 살짝 낮췄어요.
-  }
+  // 타수 계산: 맨 처음 버전 (글자 수 기반)으로 복구
+  const elapsedMinutes = (Date.now() - startTime) / 60000;
+  const speed = Math.floor(input.value.length / elapsedMinutes) || 0;
 
-  speedEl.textContent = cpm;
-  speedEl.style.color = cpm > 400 ? "#ff6f6f" : "#923e59";
-  if (cpm >= 500) speedEl.classList.add("sparkle");
+  speedEl.textContent = speed;
+  
+  // 500타 이상 효과 (필요 없으면 제거 가능해요!)
+  if (speed >= 500) speedEl.classList.add("sparkle");
   else speedEl.classList.remove("sparkle");
 
   const spans = sentenceEl.querySelectorAll("span");
@@ -287,9 +281,9 @@ input.addEventListener("keydown", e => {
   }
 });
 
-// 버튼 및 카테고리 이벤트 생략 (기존과 동일)
 prevBtn.addEventListener("click", () => { if (historyIndex > 0) { historyIndex--; displaySentence(history[historyIndex]); } });
 nextBtn.addEventListener("click", () => { if (historyIndex < history.length - 1) { historyIndex++; displaySentence(history[historyIndex]); } else newSentence(); });
+
 document.querySelectorAll(".categories button").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".categories button").forEach(b => b.classList.remove("active"));
