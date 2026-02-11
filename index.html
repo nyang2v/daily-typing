@@ -181,14 +181,14 @@ input {
 
   <div class="title">오늘의 문장</div>
   <div class="sentence" id="sentence"></div>
-  <input id="input" placeholder="여기에 그대로 쳐보세요" autocomplete="off">
+  <input id="input" placeholder="여기에 그대로 쳐보세요💗" autocomplete="off">
 
   <div class="navigation-hints">
     <div class="nav-buttons">
       <button id="prevBtn">이전 문장</button>
       <button id="nextBtn">다음 문장</button>
     </div>
-    <p class="shortcut-guide">팁: 단축키 <span>Alt + ← / →</span> 를 이용해 보세요!</p>
+    <p class="shortcut-guide">팁: 이전과 다음 문장 단축키 <span>Alt + ← / →</span> </p>
   </div>
 
   <div class="stats-container">
@@ -199,7 +199,6 @@ input {
 
 <script src="data.js"></script> 
 <script>
-
 let currentType = "anime";
 let currentSentence = "";
 let startTime = null;
@@ -233,7 +232,22 @@ function getSpeedColor(speed) {
 
 function newSentence() {
   const list = data[currentType];
-  const picked = list[Math.floor(Math.random() * list.length)];
+  
+  if (list.length <= 1) {
+    const picked = list[0];
+    updateHistory(picked);
+    return;
+  }
+
+  let picked;
+  do {
+    picked = list[Math.floor(Math.random() * list.length)];
+  } while (picked === currentSentence);
+
+  updateHistory(picked);
+}
+
+function updateHistory(picked) {
   history = history.slice(0, historyIndex + 1);
   history.push(picked);
   historyIndex++;
@@ -301,11 +315,9 @@ input.addEventListener("keydown", e => {
     if (input.value.length >= currentSentence.length) {
       e.preventDefault();
 
-      // 숫지만 추출해서 기록 비교
       const finalSpeed = parseInt(speedEl.innerText.replace(/[^0-9]/g, ""));
       const finalAccuracy = parseInt(accuracyEl.textContent);
 
-      // 문구는 지웠지만 내부적으로는 여전히 100%만 기록!
       if (finalAccuracy === 100 && finalSpeed > personalBest) {
         personalBest = finalSpeed;
         localStorage.setItem("dailyTypingBest", personalBest);
@@ -349,4 +361,3 @@ window.onload = newSentence;
 </script>
 </body>
 </html>
-
