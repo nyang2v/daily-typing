@@ -200,7 +200,8 @@ let history = [], historyIndex = -1;
 let personalBest = parseInt(localStorage.getItem("dailyTypingBest")) || 0;
 let timerInterval = null; 
 let sessionStart = Date.now(); 
-let completedSentences = 0; 
+let completedSentences = 0;
+  
 let totalSpeedSum = 0; 
 
 function getCharJasoCount(char) {
@@ -452,3 +453,4 @@ window.onload = newSentence;
 </script>
 </body>
 </html>
+
