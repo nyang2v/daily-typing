@@ -22,7 +22,7 @@ body {
   font-size: 14px; opacity: 0.8;
 }
 .record-value {
-  font-size: 24px; color: #e180c4;
+  font-size: 24px; color: #e180c4; /* 최고 기록은 기본 핑크 */
   font-weight: bold;
   display: inline-block; margin-left: 5px;
   transition: transform 0.2s ease;
@@ -200,8 +200,7 @@ let history = [], historyIndex = -1;
 let personalBest = parseInt(localStorage.getItem("dailyTypingBest")) || 0;
 let timerInterval = null; 
 let sessionStart = Date.now(); 
-let completedSentences = 0;
-  
+let completedSentences = 0; 
 let totalSpeedSum = 0; 
 
 function getCharJasoCount(char) {
@@ -453,4 +452,3 @@ window.onload = newSentence;
 </script>
 </body>
 </html>
-
