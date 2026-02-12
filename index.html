@@ -15,15 +15,22 @@ body {
   position: absolute; top: 35px; right: 45px; text-align: right;
   color: #ae97c1; font-size: 15px; letter-spacing: 1px; z-index: 30;
 }
-.best-record span {
-  font-size: 26px; display: block; color: #e180c4; margin-top: 5px;
-  font-weight: bold; transition: transform 0.2s ease;
+.record-item {
+  margin-bottom: 8px; /* 항목 사이 간격 */
+}
+.record-label {
+  font-size: 14px; opacity: 0.8;
+}
+.record-value {
+  font-size: 24px; color: #e180c4; font-weight: bold;
+  display: inline-block; margin-left: 5px;
+  transition: transform 0.2s ease;
 }
 
 .reset-btn {
   background: rgba(255, 255, 255, 0.5); border: 1px solid #923e59; border-radius: 10px;
   color: #923e59; font-family: 'Gowun Batang', serif; font-size: 12px; font-weight: bold;
-  padding: 4px 10px; cursor: pointer; margin-top: 8px; transition: 0.2s;
+  padding: 4px 10px; cursor: pointer; margin-top: 5px; transition: 0.2s;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .reset-btn:hover { background: #923e59; color: white; }
@@ -146,9 +153,15 @@ input {
 </div>
 
 <div class="best-record">
-  나의 최고 기록
-  <span id="bestScore">0</span>
-  <button id="resetBtn" class="reset-btn">초기화</button>
+  <div class="record-item">
+    <span class="record-label">나의 최고 기록</span>
+    <span id="bestScore" class="record-value">0</span>
+  </div>
+  <div class="record-item">
+    <span class="record-label">나의 평균 타수</span>
+    <span id="avgScore" class="record-value">0</span>
+  </div>
+  <button id="resetBtn" class="reset-btn">최고 기록 초기화</button>
 </div>
 
 <div class="container">
@@ -183,6 +196,8 @@ let personalBest = parseInt(localStorage.getItem("dailyTypingBest")) || 0;
 let timerInterval = null; 
 let sessionStart = Date.now(); 
 let completedSentences = 0; 
+
+let totalSpeedSum = 0; 
 
 function getCharJasoCount(char) {
   const code = char.charCodeAt(0);
@@ -235,7 +250,8 @@ animateParticles();
 
 const sentenceEl = document.getElementById("sentence"), input = document.getElementById("input");
 const speedEl = document.getElementById("speed"), accuracyEl = document.getElementById("accuracy");
-const bestScoreEl = document.getElementById("bestScore"), resetBtn = document.getElementById("resetBtn");
+const bestScoreEl = document.getElementById("bestScore"), avgScoreEl = document.getElementById("avgScore"); // 평균 점수 요소 추가
+const resetBtn = document.getElementById("resetBtn");
 const prevBtn = document.getElementById("prevBtn"), nextBtn = document.getElementById("nextBtn");
 
 bestScoreEl.textContent = personalBest;
@@ -253,6 +269,9 @@ function showResult() {
   const totalMinutes = Math.floor((now - sessionStart) / 60000);
   const totalSeconds = Math.floor(((now - sessionStart) % 60000) / 1000);
   
+  // 최종 평균 타수 계산
+  const finalAvg = completedSentences > 0 ? Math.floor(totalSpeedSum / completedSentences) : 0;
+
   let timeStr = "";
   if (totalMinutes > 0) timeStr += `${totalMinutes}분 `;
   timeStr += `${totalSeconds}초`;
@@ -260,6 +279,7 @@ function showResult() {
   const textEl = document.getElementById("resultText");
   textEl.innerHTML = `오늘의 타자 연습은<br>
   <strong>${timeStr}</strong> 동안, <strong>${completedSentences}개</strong> 문장을 연습했어요!^o^<br>
+  오늘의 평균 타수는 <strong>${finalAvg}타</strong> 입니다!<br>
   내일 또 만나요!`;
 
   document.getElementById("resultModal").style.display = "flex";
@@ -267,7 +287,6 @@ function showResult() {
 
 function quitPractice() {
   window.close();
-  
   document.getElementById("resultModal").style.display = "none";
   document.getElementById("goodbyeScreen").style.display = "flex";
 }
@@ -320,16 +339,13 @@ function newSentence() {
   timerInterval = null;
 
   const list = data[currentType];
-  
   if (list.length <= 1) { updateHistory(list[0]); return; }
 
   const recentLimit = 8;
   const recentHistory = history.slice(-recentLimit); 
-
   const candidates = list.filter(item => !recentHistory.includes(item));
 
   let picked;
-  
   if (candidates.length > 0) {
     picked = candidates[Math.floor(Math.random() * candidates.length)];
   } else {
@@ -337,7 +353,6 @@ function newSentence() {
       picked = list[Math.floor(Math.random() * list.length)]; 
     } while (picked === currentSentence);
   }
-  
   updateHistory(picked);
 }
 
@@ -410,6 +425,9 @@ input.addEventListener("keydown", e => {
       
       if (isPerfect) {
         completedSentences++;
+        totalSpeedSum += finalSpeed;
+        const currentAvg = Math.floor(totalSpeedSum / completedSentences);
+        document.getElementById("avgScore").textContent = currentAvg;
       }
       
       newSentence();
