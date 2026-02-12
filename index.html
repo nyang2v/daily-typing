@@ -16,15 +16,20 @@ body {
   color: #ae97c1; font-size: 15px; letter-spacing: 1px; z-index: 30;
 }
 .record-item {
-  margin-bottom: 8px; /* 항목 사이 간격 */
+  margin-bottom: 8px; 
 }
 .record-label {
   font-size: 14px; opacity: 0.8;
 }
 .record-value {
-  font-size: 24px; color: #e180c4; font-weight: bold;
+  font-size: 24px; color: #e180c4;
+  font-weight: bold;
   display: inline-block; margin-left: 5px;
   transition: transform 0.2s ease;
+}
+
+#avgScore {
+  color: #7d98d1; 
 }
 
 .reset-btn {
@@ -196,7 +201,6 @@ let personalBest = parseInt(localStorage.getItem("dailyTypingBest")) || 0;
 let timerInterval = null; 
 let sessionStart = Date.now(); 
 let completedSentences = 0; 
-
 let totalSpeedSum = 0; 
 
 function getCharJasoCount(char) {
@@ -250,7 +254,7 @@ animateParticles();
 
 const sentenceEl = document.getElementById("sentence"), input = document.getElementById("input");
 const speedEl = document.getElementById("speed"), accuracyEl = document.getElementById("accuracy");
-const bestScoreEl = document.getElementById("bestScore"), avgScoreEl = document.getElementById("avgScore"); // 평균 점수 요소 추가
+const bestScoreEl = document.getElementById("bestScore"), avgScoreEl = document.getElementById("avgScore");
 const resetBtn = document.getElementById("resetBtn");
 const prevBtn = document.getElementById("prevBtn"), nextBtn = document.getElementById("nextBtn");
 
@@ -269,7 +273,6 @@ function showResult() {
   const totalMinutes = Math.floor((now - sessionStart) / 60000);
   const totalSeconds = Math.floor(((now - sessionStart) % 60000) / 1000);
   
-  // 최종 평균 타수 계산
   const finalAvg = completedSentences > 0 ? Math.floor(totalSpeedSum / completedSentences) : 0;
 
   let timeStr = "";
@@ -427,7 +430,7 @@ input.addEventListener("keydown", e => {
         completedSentences++;
         totalSpeedSum += finalSpeed;
         const currentAvg = Math.floor(totalSpeedSum / completedSentences);
-        document.getElementById("avgScore").textContent = currentAvg;
+        avgScoreEl.textContent = currentAvg;
       }
       
       newSentence();
