@@ -139,7 +139,7 @@ input {
     <div class="modal-text" id="resultText">
       오늘의 타자 연습은<br>
       0분 동안, 0개 문장을 타이핑 했어요 ^o^<br>
-      다음에 또 만나요!
+      내일 또 만나요!
     </div>
     <button class="modal-close-btn" onclick="quitPractice()">안녕!</button>
   </div>
@@ -320,9 +320,24 @@ function newSentence() {
   timerInterval = null;
 
   const list = data[currentType];
+  
   if (list.length <= 1) { updateHistory(list[0]); return; }
+
+  const recentLimit = 8;
+  const recentHistory = history.slice(-recentLimit); 
+
+  const candidates = list.filter(item => !recentHistory.includes(item));
+
   let picked;
-  do { picked = list[Math.floor(Math.random() * list.length)]; } while (picked === currentSentence);
+  
+  if (candidates.length > 0) {
+    picked = candidates[Math.floor(Math.random() * candidates.length)];
+  } else {
+    do { 
+      picked = list[Math.floor(Math.random() * list.length)]; 
+    } while (picked === currentSentence);
+  }
+  
   updateHistory(picked);
 }
 
