@@ -6,90 +6,93 @@
 <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap" rel="stylesheet">
 <style>
 body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #fdebeb;
-  font-family: 'Gowun Batang', serif;
-  position: relative;
-  overflow: hidden;
+  margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
+  background: #fdebeb; font-family: 'Gowun Batang', serif; position: relative; overflow: hidden;
 }
-
-#particleCanvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 10;
-}
+#particleCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 
 .best-record {
-  position: absolute;
-  top: 35px;
-  right: 45px;
-  text-align: right;
-  color: #ae97c1;
-  font-size: 15px;
-  letter-spacing: 1px;
+  position: absolute; top: 35px; right: 45px; text-align: right;
+  color: #ae97c1; font-size: 15px; letter-spacing: 1px; z-index: 30;
 }
-
 .best-record span {
-  font-size: 26px;
-  display: block;
-  color: #e180c4;
-  margin-top: 5px;
-  transition: transform 0.2s ease;
+  font-size: 26px; display: block; color: #e180c4; margin-top: 5px;
+  font-weight: bold; transition: transform 0.2s ease;
 }
 
-.container {
-  text-align: center;
-  width: 700px;
-  position: relative;
-  z-index: 20;
+.reset-btn {
+  background: rgba(255, 255, 255, 0.5); border: 1px solid #923e59; border-radius: 10px;
+  color: #923e59; font-family: 'Gowun Batang', serif; font-size: 12px; font-weight: bold;
+  padding: 4px 10px; cursor: pointer; margin-top: 8px; transition: 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+.reset-btn:hover { background: #923e59; color: white; }
 
+.finish-btn {
+  position: absolute; bottom: 30px; right: 40px;
+  background: #ae97c1; color: white; border: none; border-radius: 20px;
+  padding: 10px 20px; font-family: 'Gowun Batang', serif; font-size: 16px;
+  cursor: pointer; z-index: 40; box-shadow: 0 4px 10px rgba(174, 151, 193, 0.4);
+  transition: transform 0.2s;
+}
+.finish-btn:hover { transform: scale(1.05); background: #923e59; }
+
+.modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5); z-index: 100;
+  justify-content: center; align-items: center;
+}
+.modal-content {
+  background: white; padding: 40px; border-radius: 20px; text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 400px;
+  animation: popUp 0.3s ease-out;
+}
+.modal-title { font-size: 24px; color: #ae97c1; margin-bottom: 20px; font-weight: bold; }
+.modal-text { font-size: 18px; color: #555; line-height: 1.6; margin-bottom: 30px; }
+.modal-close-btn {
+  background: #e180c4; color: white; border: none; padding: 10px 25px;
+  border-radius: 15px; font-family: 'Gowun Batang', serif; font-size: 16px; cursor: pointer;
+}
+@keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.goodbye-screen {
+  display: none;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: #fdebeb; z-index: 200;
+  flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; animation: fadeIn 1s ease;
+}
+.goodbye-text { font-size: 30px; color: #ae97c1; margin-bottom: 20px; }
+.goodbye-sub { font-size: 18px; color: #923e59; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.container { text-align: center; width: 700px; position: relative; z-index: 20; }
 .categories { margin-bottom: 14px; }
 .categories button {
   margin: 0 6px; padding: 6px 14px; border-radius: 20px; border: none;
-  cursor: pointer; background: #ecbecd; color: #923e59;
-  font-family: 'Gowun Batang', serif; transition: 0.3s;
+  cursor: pointer; background: #ecbecd; color: #923e59; font-family: 'Gowun Batang', serif; transition: 0.3s;
 }
 .categories button.active { background: #ae97c1; color: white; }
-
 .title { font-size: 22px; color: #ae97c1; margin-bottom: 22px; letter-spacing: 2px; }
-.sentence {
-  font-size: 26px; margin-bottom: 26px; color: #e180c4;
-  transition: opacity 0.4s ease; white-space: nowrap; min-height: 40px;
-}
+.sentence { font-size: 26px; margin-bottom: 26px; color: #e180c4; transition: opacity 0.4s ease; white-space: nowrap; min-height: 40px; }
 .fade-out { opacity: 0; }
 .correct { color: #869bc9; }
 .incorrect { color: #ea7594; }
-
 input {
   width: 520px; padding: 14px 18px; font-size: 25px; border-radius: 16px;
-  border: none; outline: none; text-align: center;
-  background: #ecbecd; color: #923e59; font-family: 'Gowun Batang', serif;
+  border: none; outline: none; text-align: center; background: #ecbecd; color: #923e59; font-family: 'Gowun Batang', serif;
 }
-
 .navigation-hints { margin-top: 25px; }
 .nav-buttons { margin-bottom: 10px; }
 .nav-buttons button {
-  margin: 0 5px; padding: 8px 16px; border-radius: 12px;
-  border: 1px solid #ae97c1; background: transparent; color: #ae97c1;
-  cursor: pointer; font-family: 'Gowun Batang', serif; transition: 0.3s;
+  margin: 0 5px; padding: 8px 16px; border-radius: 12px; border: 1px solid #ae97c1;
+  background: transparent; color: #ae97c1; cursor: pointer; font-family: 'Gowun Batang', serif; transition: 0.3s;
 }
-
 .stats-container { display: flex; justify-content: center; align-items: baseline; gap: 40px; margin-top: 25px; }
 .stat-item { font-size: 19px; color: #e180c4; }
 .stat-value { font-size: 22px; display: inline-block; min-width: 45px; text-align: left; margin-left: 5px; }
-
 .sparkle { filter: drop-shadow(0 0 6px rgba(255,255,255,0.9)); animation: pulse 0.5s infinite alternate; display: inline-block; }
 @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
-
 .shortcut-guide { font-size: 14px; color: #c36081; margin: 0; opacity: 0.8; }
 .shortcut-guide span { background: #ecbecd; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 </style>
@@ -99,7 +102,28 @@ input {
 
 <canvas id="particleCanvas"></canvas>
 
-<div class="best-record">나의 최고 타수<span id="bestScore">0</span></div>
+<div id="goodbyeScreen" class="goodbye-screen">
+  <div class="goodbye-text">오늘도 수고 많았어요!💜</div>
+  <div class="goodbye-sub">창을 닫고 스트레칭 해주세요＜（＾－＾）＞</div>
+</div>
+
+<div id="resultModal" class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-title">수고하셨어요!💖</div>
+    <div class="modal-text" id="resultText">
+      오늘의 타자 연습은<br>
+      0분 동안, 0개 문장을 타이핑 했어요 ^o^<br>
+      다음에 또 만나요!
+    </div>
+    <button class="modal-close-btn" onclick="quitPractice()">안녕!</button>
+  </div>
+</div>
+
+<div class="best-record">
+  나의 최고 기록
+  <span id="bestScore">0</span>
+  <button id="resetBtn" class="reset-btn">초기화</button>
+</div>
 
 <div class="container">
   <div class="categories">
@@ -123,85 +147,104 @@ input {
   </div>
 </div>
 
+<button class="finish-btn" onclick="showResult()">그만하기</button>
+
 <script src="data.js"></script> 
 <script>
-let currentType = "anime";
-let currentSentence = "";
-let startTime = null;
-let history = []; 
-let historyIndex = -1;
-let personalBest = localStorage.getItem("dailyTypingBest") || 0;
+let currentType = "anime", currentSentence = "", startTime = null, endTime = null;
+let history = [], historyIndex = -1;
+let personalBest = parseInt(localStorage.getItem("dailyTypingBest")) || 0;
+let timerInterval = null; 
+let sessionStart = Date.now(); 
+let completedSentences = 0; 
+
+function getCharJasoCount(char) {
+  const code = char.charCodeAt(0);
+  if (code >= 0xAC00 && code <= 0xD7A3) {
+    const charCode = code - 0xAC00;
+    const jong = charCode % 28;
+    return 2 + (jong > 0 ? 1 : 0); 
+  } 
+  return 1; 
+}
 
 const canvas = document.getElementById("particleCanvas");
 const ctx = canvas.getContext("2d");
 let particles = [];
-
 const colors = ["#ffb3ba", "#ffdfba", "#ffffba", "#baffc9", "#bae1ff", "#e0baff"];
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 class Particle {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.size = Math.random() * 8 + 2;
-    this.speedX = Math.random() * 6 - 3;
-    this.speedY = Math.random() * 6 - 3;
+    this.x = x; this.y = y;
+    this.size = Math.random() * 6 + 1;
+    this.speedX = Math.random() * 4 - 2;
+    this.speedY = Math.random() * 4 - 2;
     this.color = colors[Math.floor(Math.random() * colors.length)];
     this.opacity = 1;
   }
-  update() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    this.opacity -= 0.02;
-    if (this.size > 0.2) this.size -= 0.1;
-  }
-  draw() {
-    ctx.globalAlpha = this.opacity;
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.03; if (this.size > 0.1) this.size -= 0.05; }
+  draw() { ctx.globalAlpha = this.opacity; ctx.fillStyle = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
 }
 
 function createParticles() {
   const inputRect = document.getElementById("input").getBoundingClientRect();
   const x = inputRect.left + Math.random() * inputRect.width;
   const y = inputRect.top + Math.random() * inputRect.height;
-  for (let i = 0; i < 5; i++) {
-    particles.push(new Particle(x, y));
-  }
+  for (let i = 0; i < 6; i++) { particles.push(new Particle(x, y)); }
 }
 
 function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < particles.length; i++) {
-    particles[i].update();
-    particles[i].draw();
-    if (particles[i].opacity <= 0) {
-      particles.splice(i, 1);
-      i--;
-    }
+    particles[i].update(); particles[i].draw();
+    if (particles[i].opacity <= 0) { particles.splice(i, 1); i--; }
   }
   requestAnimationFrame(animateParticles);
 }
 animateParticles();
 
-const sentenceEl = document.getElementById("sentence");
-const input = document.getElementById("input");
-const speedEl = document.getElementById("speed");
-const accuracyEl = document.getElementById("accuracy");
-const bestScoreEl = document.getElementById("bestScore");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
+const sentenceEl = document.getElementById("sentence"), input = document.getElementById("input");
+const speedEl = document.getElementById("speed"), accuracyEl = document.getElementById("accuracy");
+const bestScoreEl = document.getElementById("bestScore"), resetBtn = document.getElementById("resetBtn");
+const prevBtn = document.getElementById("prevBtn"), nextBtn = document.getElementById("nextBtn");
 
 bestScoreEl.textContent = personalBest;
+
+resetBtn.addEventListener("click", () => {
+  if (confirm("정말로 최고 기록을 0으로 초기화할까요?🥺")) {
+    personalBest = 0;
+    localStorage.setItem("dailyTypingBest", 0);
+    bestScoreEl.textContent = 0;
+  }
+});
+
+function showResult() {
+  const now = Date.now();
+  const totalMinutes = Math.floor((now - sessionStart) / 60000);
+  const totalSeconds = Math.floor(((now - sessionStart) % 60000) / 1000);
+  
+  let timeStr = "";
+  if (totalMinutes > 0) timeStr += `${totalMinutes}분 `;
+  timeStr += `${totalSeconds}초`;
+
+  const textEl = document.getElementById("resultText");
+  textEl.innerHTML = `오늘의 타자 연습은<br>
+  <strong>${timeStr}</strong> 동안, <strong>${completedSentences}개</strong> 문장을 연습했어요!^o^<br>
+  내일 또 만나요!`;
+
+  document.getElementById("resultModal").style.display = "flex";
+}
+
+function quitPractice() {
+  window.close();
+  
+  document.getElementById("resultModal").style.display = "none";
+  document.getElementById("goodbyeScreen").style.display = "flex";
+}
 
 function getSpeedColor(speed) {
   if (speed < 100) return "#869bc9"; if (speed < 200) return "#8fbc93";
@@ -212,7 +255,44 @@ function getSpeedColor(speed) {
   return "#d4af37";
 }
 
+function updateRealTimeStats() {
+  if (!startTime) return;
+
+  const now = endTime || Date.now();
+  const elapsedMinutes = Math.max((now - startTime) / 60000, 0.0001);
+
+  let correctStrokes = 0;
+  let correctChars = 0;
+  const lengthToCompare = Math.min(input.value.length, currentSentence.length);
+
+  for (let i = 0; i < lengthToCompare; i++) {
+    if (input.value[i] === currentSentence[i]) {
+      correctStrokes += getCharJasoCount(input.value[i]);
+      correctChars++;
+    }
+  }
+
+  const currentSpeed = Math.floor(correctStrokes / elapsedMinutes);
+  
+  speedEl.textContent = currentSpeed;
+  speedEl.style.color = getSpeedColor(currentSpeed);
+  if (currentSpeed >= 500) speedEl.classList.add("sparkle"); else speedEl.classList.remove("sparkle");
+
+  const spans = sentenceEl.querySelectorAll("span");
+  spans.forEach((span, i) => {
+    if (!input.value[i]) span.className = "";
+    else if (input.value[i] === span.textContent) { span.className = "correct"; }
+    else span.className = "incorrect";
+  });
+  
+  const acc = Math.floor((correctChars / Math.max(lengthToCompare, 1)) * 100) || 100;
+  accuracyEl.textContent = acc;
+}
+
 function newSentence() {
+  clearInterval(timerInterval); 
+  timerInterval = null;
+
   const list = data[currentType];
   if (list.length <= 1) { updateHistory(list[0]); return; }
   let picked;
@@ -229,9 +309,12 @@ function updateHistory(picked) {
 function displaySentence(text) {
   sentenceEl.classList.add("fade-out");
   setTimeout(() => {
-    currentSentence = text; sentenceEl.innerHTML = ""; input.value = ""; startTime = null;
+    currentSentence = text; sentenceEl.innerHTML = ""; input.value = ""; 
+    startTime = null; endTime = null;
+    
     speedEl.textContent = "0"; speedEl.style.color = getSpeedColor(0); accuracyEl.textContent = "100";
     speedEl.classList.remove("sparkle");
+    
     [...currentSentence].forEach(char => {
       const span = document.createElement("span"); span.textContent = char; sentenceEl.appendChild(span);
     });
@@ -241,38 +324,53 @@ function displaySentence(text) {
 }
 
 input.addEventListener("input", () => {
-  if (!input.value) { startTime = null; speedEl.textContent = "0"; return; }
-  if (!startTime) startTime = Date.now();
+  if (!input.value) { 
+    startTime = null; endTime = null; 
+    speedEl.textContent = "0"; 
+    clearInterval(timerInterval);
+    timerInterval = null;
+    return; 
+  }
+
+  if (!startTime) {
+    startTime = Date.now();
+    timerInterval = setInterval(updateRealTimeStats, 50); 
+  }
 
   createParticles();
 
-  const elapsedMinutes = (Date.now() - startTime) / 60000;
-  const speed = Math.floor(input.value.length / elapsedMinutes) || 0;
-  speedEl.textContent = speed;
-  speedEl.style.color = getSpeedColor(speed);
-  if (speed >= 500) speedEl.classList.add("sparkle"); else speedEl.classList.remove("sparkle");
-
-  const spans = sentenceEl.querySelectorAll("span");
-  let correctChars = 0;
-  spans.forEach((span, i) => {
-    if (!input.value[i]) span.className = "";
-    else if (input.value[i] === span.textContent) { span.className = "correct"; correctChars++; }
-    else span.className = "incorrect";
-  });
-  accuracyEl.textContent = Math.floor((correctChars / input.value.length) * 100) || 0;
+  if (input.value.length >= currentSentence.length && !endTime) {
+    endTime = Date.now();
+    clearInterval(timerInterval); 
+    updateRealTimeStats(); 
+  } else if (input.value.length < currentSentence.length) {
+    endTime = null;
+    if (!timerInterval && startTime) {
+      timerInterval = setInterval(updateRealTimeStats, 50);
+    }
+  }
 });
 
 input.addEventListener("keydown", e => {
   if (e.key === "Enter" || e.key === " ") {
     if (input.value.length >= currentSentence.length) {
       e.preventDefault();
-      const finalSpeed = parseInt(speedEl.innerText.replace(/[^0-9]/g, ""));
-      const finalAccuracy = parseInt(accuracyEl.textContent);
-      if (finalAccuracy === 100 && finalSpeed > personalBest) {
-        personalBest = finalSpeed; localStorage.setItem("dailyTypingBest", personalBest);
-        bestScoreEl.textContent = personalBest; bestScoreEl.style.transform = "scale(1.3)";
+      
+      const finalSpeed = parseInt(speedEl.textContent.replace(/[^0-9]/g, ""));
+      const isPerfect = input.value.startsWith(currentSentence);
+
+      if (isPerfect && finalSpeed > personalBest) {
+        personalBest = finalSpeed;
+        localStorage.setItem("dailyTypingBest", personalBest);
+        bestScoreEl.textContent = personalBest;
+        bestScoreEl.style.transform = "scale(1.3)";
         setTimeout(() => bestScoreEl.style.transform = "scale(1)", 200);
       }
+      
+      if (isPerfect) {
+        completedSentences++;
+      }
+      
       newSentence();
     }
   }
@@ -292,5 +390,3 @@ window.onload = newSentence;
 </script>
 </body>
 </html>
-
-
